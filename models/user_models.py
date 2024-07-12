@@ -14,7 +14,8 @@ class BaseUser(BaseModel):
 
     class Config:
         extra = "ignore"
-        from_atributes=True
+        from_atributes = True
+
 
 class UserDTO(BaseModel):
     id: int

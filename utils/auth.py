@@ -9,18 +9,16 @@ from jwt import PyJWTError
 from passlib.hash import bcrypt
 from pydantic import ValidationError
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.database import get_async_session
 from models.models import UserModelOrm
-from models.user_models import BaseUser, Token, UserCreate, UserDTO, UserRoleEnum
-from utils.exceptions import (
-    BadCredentialsError,
-    InactiveUserError,
-    UserAlreadyExistsError,
-    WrongUserNameOrPasswordError,
-)
+from models.user_models import (BaseUser, Token, UserCreate, UserDTO,
+                                UserRoleEnum)
+from utils.exceptions import (BadCredentialsError, InactiveUserError,
+                              UserAlreadyExistsError,
+                              WrongUserNameOrPasswordError)
 
 load_dotenv()
 
@@ -29,6 +27,7 @@ ALGORITHM = os.environ["ALGORITHM"]
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ["ACCESS_TOKEN_EXPIRE_MINUTES"])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+
 
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserDTO:
     return await AuthService.validate_token(token=token)
@@ -103,11 +102,13 @@ class AuthService:
             user_from_db = result.scalar()
         except Exception as e:
             print(e)
-            raise 
+            raise
         if not user_from_db:
             raise WrongUserNameOrPasswordError()
 
-        elif not await self.verify_password(user.password, user_from_db.hashed_password):
+        elif not await self.verify_password(
+            user.password, user_from_db.hashed_password
+        ):
             raise WrongUserNameOrPasswordError()
 
         elif not user_from_db.is_active:

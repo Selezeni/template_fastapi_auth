@@ -6,7 +6,6 @@ from models.user_models import BaseUser, UserCreate, UserDTO, UserRoleEnum
 from services.user_service import UserService
 from utils.auth import get_current_user
 from utils.exceptions import NotEnoughRightsError
-from utils.exceptions import NotEnoughRightsError
 
 router = APIRouter(
     prefix="/user",
@@ -19,7 +18,7 @@ async def create_user(
     user: BaseUser,
     service: UserService = Depends(),
     session: AsyncSession = Depends(get_async_session),
-    current_user: UserDTO = Depends(get_current_user)
+    current_user: UserDTO = Depends(get_current_user),
 ):
     if current_user.role != UserRoleEnum.ADMIN:
         raise NotEnoughRightsError()
@@ -32,7 +31,7 @@ async def update_user(
     user_data: UserCreate = Body(...),
     service: UserService = Depends(),
     session: AsyncSession = Depends(get_async_session),
-    current_user: UserDTO = Depends(get_current_user)
+    current_user: UserDTO = Depends(get_current_user),
 ):
     if current_user.role != UserRoleEnum.ADMIN:
         raise NotEnoughRightsError()
@@ -45,7 +44,7 @@ async def user_info_by_id(
     name: str,
     service: UserService = Depends(),
     session: AsyncSession = Depends(get_async_session),
-    current_user: UserDTO = Depends(get_current_user)
+    current_user: UserDTO = Depends(get_current_user),
 ):
     if current_user.role != UserRoleEnum.ADMIN:
         raise NotEnoughRightsError()
@@ -57,7 +56,7 @@ async def delete_user(
     id: int,
     service: UserService = Depends(),
     session: AsyncSession = Depends(get_async_session),
-    current_user: UserDTO = Depends(get_current_user)
+    current_user: UserDTO = Depends(get_current_user),
 ):
     if current_user.role != UserRoleEnum.ADMIN:
         raise NotEnoughRightsError()
