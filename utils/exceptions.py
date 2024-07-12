@@ -29,6 +29,15 @@ class InactiveUserError(HTTPException):
         super().__init__(self.status_code, self.detail, self.headers)
 
 
+class UserAlreadyExistsError(HTTPException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = ("Выберите дргое имя пользователя",)
+    headers = {"Authneticate": "Bearer"}
+
+    def __init__(self):
+        super().__init__(self.status_code, self.detail, self.headers)
+
+
 class NotEnoughRightsError(HTTPException):
     status_code = status.HTTP_403_FORBIDDEN
     detail = ("Не достаточно прав",)

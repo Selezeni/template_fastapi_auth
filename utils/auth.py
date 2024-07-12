@@ -10,6 +10,7 @@ from passlib.hash import bcrypt
 from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import IntegrityError
 
 from database.database import get_async_session
 from models.models import UserModelOrm
@@ -17,6 +18,7 @@ from models.user_models import BaseUser, Token, UserCreate, UserDTO, UserRoleEnu
 from utils.exceptions import (
     BadCredentialsError,
     InactiveUserError,
+    UserAlreadyExistsError,
     WrongUserNameOrPasswordError,
 )
 
@@ -57,7 +59,7 @@ class AuthService:
             current_user = UserDTO(**user_data)
         except ValidationError as e:
             print(e)
-            raise
+            raise BadCredentialsError()
         return current_user
 
     @classmethod
@@ -81,13 +83,17 @@ class AuthService:
         self.session = session
 
     async def register_new_user(self, user_data: UserCreate):
-        stmt = UserModelOrm(
-            username=user_data.username,
-            hashed_password=await self.hash_password(user_data.password),
-            role=user_data.role,
-        )
-        self.session.add(stmt)
-        await self.session.commit()
+        try:
+            stmt = UserModelOrm(
+                username=user_data.username,
+                hashed_password=await self.hash_password(user_data.password),
+                role=user_data.role,
+            )
+            self.session.add(stmt)
+            await self.session.commit()
+        except IntegrityError as e:
+            print(e)
+            raise UserAlreadyExistsError()
         return {"status": f"{status.HTTP_201_CREATED} CREATED"}
 
     async def authenticate_user(self, user: BaseUser) -> Token:
@@ -97,7 +103,7 @@ class AuthService:
             user_from_db = result.scalar()
         except Exception as e:
             print(e)
-            raise
+            raise 
         if not user_from_db:
             raise WrongUserNameOrPasswordError()
 
@@ -105,7 +111,6 @@ class AuthService:
             raise WrongUserNameOrPasswordError()
 
         elif not user_from_db.is_active:
-            print(user_from_db)
             raise InactiveUserError()
 
         try:

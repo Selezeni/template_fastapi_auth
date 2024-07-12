@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 
 from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound, IntegrityError
 
 from models.models import UserModelOrm
 from models.user_models import UserCreate, UserDTO
 from utils.auth import AuthService
-from utils.exceptions import WrongUserNameOrPasswordError
+from utils.exceptions import UserAlreadyExistsError, WrongUserNameOrPasswordError
 
 
 class AbstractRepository(ABC):
@@ -38,28 +38,23 @@ class UserRepository(AbstractRepository):
             )
             session.add(stmt)
             await session.commit()
-        except Exception as e:
+        except IntegrityError as e:
             print(e)
-            raise
+            raise UserAlreadyExistsError()
         return {"message": f"user with id={stmt.id} created"}
 
     async def update_user_by_id(self, id: int, user_data: UserCreate, session: AsyncSession):
-        try:
-            query = select(UserModelOrm).where(UserModelOrm.id == id)
-            result = await session.execute(query)
-            user_from_db = result.scalar_one_or_none()
-        except Exception as e:
-            print(e)
-            raise
-        
-        if not user_from_db:
-            raise WrongUserNameOrPasswordError()
-        
-        user_from_db.username = user_data.username
-        user_from_db.hashed_password = await AuthService().hash_password(user_data.password)
-        user_from_db.role = user_data.role
-        user_from_db.is_active = user_data.is_active
-        session.add(user_from_db)
+        stmt = (
+            update(UserModelOrm)
+            .filter(UserModelOrm.id == id)
+            .values(
+                username = user_data.username,
+                hashed_password = await AuthService().hash_password(user_data.password),
+                role = user_data.role,
+                is_active = user_data.is_active,
+            )
+        )
+        await session.execute(stmt)
         await session.commit()
         
         return {"message": f"user with id={id} updated"}
@@ -94,4 +89,5 @@ class UserRepository(AbstractRepository):
         except Exception as e:
             print(e)
             raise
+        
         return {"message": f"user with id={id} deleted"}
