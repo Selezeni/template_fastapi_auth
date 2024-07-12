@@ -14,11 +14,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.database import get_async_session
 from models.models import UserModelOrm
-from models.user_models import (BaseUser, Token, UserCreate, UserDTO,
-                                UserRoleEnum)
-from utils.exceptions import (BadCredentialsError, InactiveUserError,
-                              UserAlreadyExistsError,
-                              WrongUserNameOrPasswordError)
+from models.user_models import BaseUser, Token, UserCreate, UserDTO, UserRoleEnum
+from utils.exceptions import (
+    BadCredentialsError,
+    InactiveUserError,
+    UserAlreadyExistsError,
+    WrongUserNameOrPasswordError,
+)
 
 load_dotenv()
 

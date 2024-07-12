@@ -7,8 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models.models import UserModelOrm
 from models.user_models import UserCreate, UserDTO
 from utils.auth import AuthService
-from utils.exceptions import (UserAlreadyExistsError,
-                              WrongUserNameOrPasswordError)
+from utils.exceptions import UserAlreadyExistsError, WrongUserNameOrPasswordError
 
 
 class AbstractRepository(ABC):
@@ -72,14 +71,13 @@ class UserRepository(AbstractRepository):
         except NoResultFound as e:
             print(e)
             raise WrongUserNameOrPasswordError()
-        user_out = UserDTO(
+
+        return UserDTO(
             id=user_from_db.id,
             sub=user_from_db.username,
             role=user_from_db.role,
             is_active=user_from_db.is_active,
         )
-        
-        return user_out
 
     async def delete_user_by_id(self, id: int, session: AsyncSession):
         try:
