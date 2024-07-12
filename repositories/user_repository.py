@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import NoResultFound
 
@@ -84,7 +84,11 @@ class UserRepository(AbstractRepository):
 
     async def delete_by_id(self, id: int, session: AsyncSession):
         try:
-            stmt = delete(UserModelOrm).where(UserModelOrm.id == id)
+            stmt = (
+                update(UserModelOrm)
+                .filter(UserModelOrm.id == id)
+                .values(is_active = False)
+            ) 
             await session.execute(stmt)
             await session.commit()
         except Exception as e:
