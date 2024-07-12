@@ -32,7 +32,7 @@ services:
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: a.seleznev@avgr.su
-      PGADMIN_DEFAULT_PASSWORD: 23As9080
+      PGADMIN_DEFAULT_PASSWORD: a.seleznev
       # PGADMIN_CONFIG_SERVER_MODE: "False"
       PGADMIN_LISTEN_PORT: 5050
     ports:
