@@ -1,6 +1,5 @@
 README.md
 .gitignore
-data
-pgadmin-data
-.vscode
-.venv
+volumes/
+.vscode/
+.venv/
