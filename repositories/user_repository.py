@@ -69,15 +69,16 @@ class UserRepository(AbstractRepository):
             )
             result = await session.execute(query)
             user_from_db = result.scalar_one()
-            user_out = UserDTO(
-                id=user_from_db.id,
-                sub=user_from_db.username,
-                role=user_from_db.role,
-                is_active=user_from_db.is_active,
-            )
         except NoResultFound as e:
             print(e)
             raise WrongUserNameOrPasswordError()
+        user_out = UserDTO(
+            id=user_from_db.id,
+            sub=user_from_db.username,
+            role=user_from_db.role,
+            is_active=user_from_db.is_active,
+        )
+        
         return user_out
 
     async def delete_user_by_id(self, id: int, session: AsyncSession):
