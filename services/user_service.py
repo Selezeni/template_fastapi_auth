@@ -16,7 +16,7 @@ class UserService:
         return await self.repository.update_user_by_id(id, user_data, session)
 
     async def get_user(self, id: int, name: str, session: AsyncSession):
-        return await self.repository.get_by_id_name(id, name, session)
+        return await self.repository.get_user_by_id_name(id, name, session)
 
-    async def delete(self, id: int, session: AsyncSession):
-        return await self.repository.delete_by_id(id, session)
+    async def delete_user(self, id: int, session: AsyncSession):
+        return await self.repository.delete_user_by_id(id, session)

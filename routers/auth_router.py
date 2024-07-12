@@ -21,5 +21,5 @@ async def login(
 
 
 @router.get("/user")
-async def get_info(current_user: UserDTO = Depends(get_current_user)) -> UserDTO:
+async def get_info(current_user: UserDTO = Depends(get_current_user)):
     return current_user

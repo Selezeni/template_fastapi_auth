@@ -60,4 +60,4 @@ async def delete_user(
 ):
     if current_user.role != UserRoleEnum.ADMIN:
         raise NotEnoughRightsError()
-    return await service.delete(id, session)
+    return await service.delete_user(id, session)

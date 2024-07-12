@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from sqlalchemy import delete, select, update
+from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,21 +13,19 @@ from utils.exceptions import (UserAlreadyExistsError,
 
 class AbstractRepository(ABC):
     @abstractmethod
-    def create_new_user(
-        self,
-    ):
+    def create_new_user():
         pass
 
     @abstractmethod
-    def update_user_by_id(self):
+    def update_user_by_id():
         pass
 
     @abstractmethod
-    def get_by_id_name(self):
+    def get_user_by_id_name():
         pass
 
     @abstractmethod
-    def delete_by_id(self):
+    def delete_user_by_id():
         pass
 
 
@@ -64,7 +62,7 @@ class UserRepository(AbstractRepository):
 
         return {"message": f"user with id={id} updated"}
 
-    async def get_by_id_name(self, id: int, name: str, session: AsyncSession):
+    async def get_user_by_id_name(self, id: int, name: str, session: AsyncSession):
         try:
             query = select(UserModelOrm).filter(
                 UserModelOrm.id == id, UserModelOrm.username == name
@@ -82,7 +80,7 @@ class UserRepository(AbstractRepository):
             raise WrongUserNameOrPasswordError()
         return user_out
 
-    async def delete_by_id(self, id: int, session: AsyncSession):
+    async def delete_user_by_id(self, id: int, session: AsyncSession):
         try:
             stmt = (
                 update(UserModelOrm)
