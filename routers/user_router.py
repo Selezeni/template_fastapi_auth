@@ -52,7 +52,7 @@ async def user_info_by_id(
 
 
 @router.delete("/delete/{id}")
-async def delete_user(
+async def delete_user_by_id(
     id: int,
     service: UserService = Depends(),
     session: AsyncSession = Depends(get_async_session),
