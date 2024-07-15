@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from pydantic import ValidationError
 from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models.models import UserModelOrm
 from models.user_models import UserCreate, UserDTO
 from utils.auth import AuthService
-from utils.exceptions import UserAlreadyExistsError, WrongUserNameOrPasswordError
+from utils.exceptions import UserAlreadyExistsError, UserNotLatinNameError, WrongUserNameOrPasswordError
 
 
 class AbstractRepository(ABC):
@@ -41,6 +42,7 @@ class UserRepository(AbstractRepository):
         except IntegrityError as e:
             print(e)
             raise UserAlreadyExistsError()
+            
         return {"message": f"user with id={stmt.id} created"}
 
     async def update_user_by_id(

@@ -45,3 +45,12 @@ class NotEnoughRightsError(HTTPException):
 
     def __init__(self):
         super().__init__(self.status_code, self.detail, self.headers)
+
+
+class UserNotLatinNameError(HTTPException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = ("Имя пользователя должно состоять из символов латинского алфавита и/или цифр",)
+    headers = {"Authneticate": "Bearer"}
+
+    def __init__(self):
+        super().__init__(self.status_code, self.detail, self.headers)

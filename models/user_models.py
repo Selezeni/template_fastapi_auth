@@ -9,8 +9,8 @@ class UserRoleEnum(str, Enum):
 
 
 class BaseUser(BaseModel):
-    username: str
-    password: str
+    username: str = Field(pattern=r"^[a-zA-Z0-9_-]{3,16}$")
+    password: str = Field(min_length=8)
 
     class Config:
         extra = "ignore"
