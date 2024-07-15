@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
 
 
 class UserModelOrm(Base):
-    __tablename__ = "users"
+    __tablename__ = "api_users"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     username: Mapped[str] = mapped_column(unique=True, index=True)
