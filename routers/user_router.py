@@ -39,7 +39,7 @@ async def update_user(
 
 
 @router.get("/get/{id}")
-async def user_info_by_id(
+async def get_user_info_by_id_and_name(
     id: int,
     name: str,
     service: UserService = Depends(),
