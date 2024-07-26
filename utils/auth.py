@@ -75,6 +75,7 @@ class AuthService:
             "is_active": user.is_active,
         }
         token = jwt.encode(payload, SECRET_KEY, ALGORITHM)
+
         return Token(access_token=token)
 
     def __init__(
@@ -95,6 +96,7 @@ class AuthService:
         except IntegrityError as e:
             print(e)
             raise UserAlreadyExistsError()
+
         return {"status": f"{status.HTTP_201_CREATED} CREATED"}
 
     async def authenticate_user(self, user: BaseUser) -> Token:

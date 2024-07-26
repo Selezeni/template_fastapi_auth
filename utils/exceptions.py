@@ -49,7 +49,9 @@ class NotEnoughRightsError(HTTPException):
 
 class UserNotLatinNameError(HTTPException):
     status_code = status.HTTP_400_BAD_REQUEST
-    detail = ("Имя пользователя должно состоять из символов латинского алфавита и/или цифр",)
+    detail = (
+        "Имя пользователя должно состоять из символов латинского алфавита и/или цифр",
+    )
     headers = {"Authneticate": "Bearer"}
 
     def __init__(self):
