@@ -16,7 +16,7 @@ DB_PASSWORD = os.environ["DB_PASSWORD"]
 DB_PORT = os.environ["DB_PORT"]
 DB_NAME = os.environ["DB_NAME"]
 
-DB_DSN = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@localhost:{DB_PORT}/{DB_NAME}"
+DB_DSN = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@db_postgres:{DB_PORT}/{DB_NAME}"
 
 
 engine: AsyncEngine = create_async_engine(DB_DSN, echo=True)
